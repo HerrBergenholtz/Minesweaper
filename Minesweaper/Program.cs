@@ -10,46 +10,28 @@ namespace Minesweaper
     {
         public static void Main()
         {
-            string[,] gameBoard = new string[6, 6];
-            gameBoard[0, 0] = "[]";
-            gameBoard[1, 0] = "[]";
-            gameBoard[2, 0] = "[]";
-            gameBoard[3, 0] = "[]";
-            gameBoard[4, 0] = "[]";
-            gameBoard[5, 0] = "[]";
-            gameBoard[0, 1] = "[]";
-            gameBoard[1, 1] = "[]";
-            gameBoard[2, 1] = "[]";
-            gameBoard[3, 1] = "[]";
-            gameBoard[4, 1] = "[]";
-            gameBoard[5, 1] = "[]";
-            gameBoard[0, 2] = "[]";
-            gameBoard[1, 2] = "[]";
-            gameBoard[2, 2] = "[]";
-            gameBoard[3, 2] = "[]";
-            gameBoard[4, 2] = "[]";
-            gameBoard[5, 2] = "[]";
-            gameBoard[0, 3] = "[]";
-            gameBoard[1, 3] = "[]";
-            gameBoard[2, 3] = "[]";
-            gameBoard[3, 3] = "[]";
-            gameBoard[4, 3] = "[]";
-            gameBoard[5, 3] = "[]";
-            gameBoard[0, 4] = "[]";
-            gameBoard[1, 4] = "[]";
-            gameBoard[2, 4] = "[]";
-            gameBoard[3, 4] = "[]";
-            gameBoard[4, 4] = "[]";
-            gameBoard[5, 4] = "[]";
-            gameBoard[0, 5] = "[]";
-            gameBoard[1, 5] = "[]";
-            gameBoard[2, 5] = "[]";
-            gameBoard[3, 5] = "[]";
-            gameBoard[4, 5] = "[]";
-            gameBoard[5, 5] = "[]";
+            int[,] mines = new int[,]
+            {
+                { 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0 }
+            };
+
+            string[,] gameBoard = new string[,]
+            {
+                { "[]", "[]", "[]", "[]", "[]", "[]" },
+                { "[]", "[]", "[]", "[]", "[]", "[]" },
+                { "[]", "[]", "[]", "[]", "[]", "[]" },
+                { "[]", "[]", "[]", "[]", "[]", "[]" },
+                { "[]", "[]", "[]", "[]", "[]", "[]" }
+            };
 
             int x = 1;
             int y = 2;
+
             string svar = VisaMeddelande(gameBoard, x, y);
 
             while (svar != "exit")
@@ -93,6 +75,9 @@ namespace Minesweaper
                         x++;
                         svar = VisaMeddelande(gameBoard, x, y);
                         break;
+                    case "f":
+                        VäljRuta(mines, gameBoard, x, y);
+                        break;
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Du måate ha en korrekt input!");
@@ -135,7 +120,6 @@ namespace Minesweaper
 
             Console.WriteLine("Du befinner dig på en gameBoard av bokstäver.");
             Console.WriteLine($"Koordinat: {x}, {y}");
-            Console.WriteLine($"Bokstav: {gameBoard[x, y]}");
             for (int i = 0; i < gameBoard.GetLength(0); i++)
             {
                 Console.WriteLine(" -----------------------------");
@@ -145,13 +129,13 @@ namespace Minesweaper
                     if (j == x && i == y)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("[]");
+                        Console.Write(gameBoard[x, y]);
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write(" | ");
                     }
                     else
                     {
-                        Console.Write(gameBoard[j, i] + " | ");
+                        Console.Write(gameBoard[i, j] + " | ");
                     }
                 }
                 Console.WriteLine(" ");
@@ -162,6 +146,72 @@ namespace Minesweaper
             return svar;
         }
 
+        public static void VäljRuta(int[,] mines, string[,] gameBoard, int x, int y)
+        {
+            if (mines[y, x] == 1)
+            {
+                GameOver();
+            }
+            else
+            {
+                NoMine(gameBoard, mines, x, y);
+            }
+        }
+
+        public static void GameOver()
+        {
+            Console.WriteLine("Tyvärr, du klickade på en mina");
+        }
+
+        public static void NoMine(string[,] gameBoard, int[,] mines, int x, int y)
+        {
+            /*for (int i = 0; i < mines.GetLength(0); i++)
+            {
+                for (int j = 0; j < mines.GetLength(1); j++)
+                {
+                    Console.Write(mines[x, y]);
+                }
+                Console.WriteLine("");
+            }
+            Console.ReadKey();*/
+            Console.WriteLine(mines[x, y]);
+            Console.WriteLine($"{x},{y}");
+            int minorjämte = 0;
+            if (mines[y--, x--] == 1)
+            {
+                minorjämte++;
+            }
+            else if (mines[y, x--] == 1)
+            {
+                minorjämte++;
+            }
+            else if (mines[y++, x--] == 1)
+            {
+                minorjämte++;
+            }
+            else if (mines[y++, x] == 1)
+            {
+                minorjämte++;
+            }
+            else if (mines[y++, x++] == 1)
+            {
+                minorjämte++;
+            }
+            else if (mines[y, x++] == 1)
+            {
+                minorjämte++;
+            }
+            else if (mines[y--, x++] == 1)
+            {
+                minorjämte++;
+            }
+            else if (mines[y--, x] == 1)
+            {
+                minorjämte++;
+            }
+
+        }
+
         public static void Unavailable()
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -170,4 +220,3 @@ namespace Minesweaper
         }
     }
 }
-
